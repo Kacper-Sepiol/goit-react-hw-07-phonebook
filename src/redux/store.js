@@ -1,29 +1,14 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
-// import {
-//   addContact,
-//   deleteContact,
-//   addFilter,
-//   deleteAllContactsForFilter,
-//   addFilterContact,
-// } from './actions';
 import { fetchContactsThunk } from 'components/fetchContacts/FetchContacts';
-
-// const appState = {
-//   contacts: [
-//     { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-//     { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-//     { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-//     { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-//   ],
-//   filter: '',
-// };
 
 const contactsSlice = createSlice({
   name: 'contacts',
   initialState: {
     items: [],
+    allItems: [],
     error: null,
     isLoading: false,
+    filter: '',
   },
   reducers: {
     deleteContact: (state, action) => {
@@ -31,6 +16,19 @@ const contactsSlice = createSlice({
       state.items = state.items.filter(
         contact => contact.id !== contactIdToDelete
       );
+
+      state.allItems = state.allItems.filter(
+        contact => contact.id !== contactIdToDelete
+      );
+    },
+    addFilter: (state, action) => {
+      state.filter = action.payload.toLowerCase();
+    },
+    deleteAllContactsForFilter: (state, action) => {
+      state.items = [];
+    },
+    addFilterContact: (state, action) => {
+      state.items = action.payload;
     },
   },
   extraReducers: builder => {
@@ -42,6 +40,7 @@ const contactsSlice = createSlice({
         state.isLoading = false;
         state.error = null;
         state.items = action.payload;
+        state.allItems = state.items;
       })
       .addCase(fetchContactsThunk.rejected, (state, action) => {
         state.isLoading = false;
@@ -50,31 +49,12 @@ const contactsSlice = createSlice({
   },
 });
 
-export const { deleteContact } = contactsSlice.actions;
-
-// const contactsReducer = createReducer(appState, builder => {
-//   builder
-//     .addCase(addContact, (state, action) => {
-//       state.contacts.push(action.payload);
-//     })
-//     .addCase(addFilterContact, (state, action) => {
-//       state.contacts = action.payload;
-//     })
-//     .addCase(deleteContact, (state, action) => {
-//       const index = state.contacts.findIndex(
-//         contact => contact.id === action.payload
-//       );
-//       if (index !== -1) {
-//         state.contacts.splice(index, 1);
-//       }
-//     })
-//     .addCase(deleteAllContactsForFilter, (state, action) => {
-//       state.contacts = [];
-//     })
-//     .addCase(addFilter, (state, action) => {
-//       state.filter = action.payload.toLowerCase();
-//     });
-// });
+export const {
+  deleteContact,
+  addFilter,
+  deleteAllContactsForFilter,
+  addFilterContact,
+} = contactsSlice.actions;
 
 const contactsReducer = contactsSlice.reducer;
 

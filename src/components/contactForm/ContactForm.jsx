@@ -1,8 +1,5 @@
 import css from './FormPhoneBook.module.css';
 import PropTypes from 'prop-types';
-import { fetchContacts } from 'components/fetchContacts/FetchContacts';
-
-const data = {};
 
 const ContactForm = ({ handleSubmit }) => (
   <form className={css.form} onSubmit={handleSubmit}>
