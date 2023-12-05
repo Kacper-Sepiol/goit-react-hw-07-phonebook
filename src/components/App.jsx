@@ -11,6 +11,11 @@ import {
 } from '../redux/actions';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
+import {
+  fetchContactsThunk,
+  fetchAllContacts,
+  fetchContacts,
+} from './fetchContacts/FetchContacts';
 
 const COPY_CONTACTS = [
   { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
@@ -22,15 +27,20 @@ const COPY_CONTACTS = [
 export const App = () => {
   const dispatch = useDispatch();
   const filter = useSelector(state => state.filter);
-  const contact = useSelector(state => state.contacts);
+  const contact = useSelector(state => state.contacts.items);
 
+  // useEffect(() => {
+  //   const contactsJSON = localStorage.getItem('contacts');
+  //   const parsedContacts = JSON.parse(contactsJSON);
+
+  //   if (parsedContacts) {
+  //     dispatch(addFilterContact(parsedContacts));
+  //   }
+  // }, [dispatch]);
+
+  // useEffect ktory sprawdza czy sa dane w backendzie, jesli sa to je pobiera
   useEffect(() => {
-    const contactsJSON = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(contactsJSON);
-
-    if (parsedContacts) {
-      dispatch(addFilterContact(parsedContacts));
-    }
+    dispatch(fetchContactsThunk());
   }, [dispatch]);
 
   const handleChangeFilterField = evt => {
@@ -53,11 +63,17 @@ export const App = () => {
   const handleSubmit = event => {
     event.preventDefault();
 
+    const data = {};
+
     const form = event.target;
     const name = form.elements.name.value;
     const number = form.elements.number.value;
 
-    dispatch(addContact(name, number));
+    data.name = name;
+    data.phone = number;
+
+    // dispatch(addContact(name, number));
+    fetchContacts(data);
 
     const nameExists = contact.some(
       contact => contact.name.toLowerCase() === name.toLowerCase()
