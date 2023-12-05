@@ -8,7 +8,7 @@ import {
   addFilter,
   deleteAllContactsForFilter,
   addFilterContact,
-} from 'redux/actions';
+} from '../redux/actions';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 
